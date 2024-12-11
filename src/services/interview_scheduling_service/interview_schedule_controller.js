@@ -6,15 +6,14 @@ const createInterviewDetail = async (req, res) => {
         const userEmail = req.body.email;
         const jobID = req.body.jobId
         const randomString = uuidv4().split('-').join(''); // Generate a random string
-        
         const timestamp = Date.now();
         const sessionID = timestamp
         const uniqueCode = `${timestamp}-${randomString}`;
         const newInterviewData = new InterviewDetails({
-            jobID,
+            jobID:jobID,
             email: userEmail,
-            sessionID,
-            uniqueRandomCode
+            sessionID:sessionID,
+            uniqueRandomCode: uniqueCode
         });
         const interviewDetails = await newInterviewData.save();
         // const query = 'INSERT INTO interviewDetails (email, uniqueCode) VALUES (?, ?)';
