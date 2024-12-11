@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const port = 8000;
 const app = express();
+const cors = require('cors')
 
 // Routing components
 const aibotrouter = require("./src/services/ai_service/ai_router")
@@ -14,6 +15,7 @@ mongoose.connection.once("open", () => {
   console.log("connected with database..");
 });
 
+app.use(cors())
 //middleware
 app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
