@@ -5,14 +5,14 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   service: "gmail", 
   auth: {
-    user: "b.k.milindwaghmare@gmail.com", 
-    pass: "Milind@2312", 
+    user: process.env.USERNAME,
+    pass: process.env.PASSWORD, 
   },
 });
 
 // Function to send emails
 
-const generateEmailContent = (candidate) => {
+const generateEmailContent = (name, link, experience) => {
     return `
       <table style="width: 100%; max-width: 600px; margin: auto; border: 1px solid #ddd; border-spacing: 0; font-family: Arial, sans-serif;">
         <thead>
@@ -25,10 +25,10 @@ const generateEmailContent = (candidate) => {
         <tbody>
           <tr>
             <td style="padding: 20px; font-size: 16px; color: #333;">
-              <p>Dear ${candidate.name},</p>
-              <p>Thank you for applying for the post of Product Management position with ${candidate.experience} years of experience.</p>
+              <p>Dear ${name},</p>
+              <p>Thank you for applying for the post of Product Management position with ${experience} years of experience.</p>
               <p>Please click the button below to attend the interview:</p>
-              <a href="${candidate.uniqueLink}" style="text-decoration: none;">
+              <a href="${link}" style="text-decoration: none;">
                 <button style="background-color: #30d5c7; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">
                   Start Interview
                 </button>
@@ -40,19 +40,19 @@ const generateEmailContent = (candidate) => {
       </table>
     `;
   };
-const sendEmail = async (candidate) => {
+const sendEmail = async (name,email,link, experience) => {
       
   try {
       const mailOptions = {
         from: "b.k.milindwaghmare@gmail.com", // Sender address
-        to: candidate.email, // Receiver email
+        to: email, // Receiver email
         subject: "Hiezy AI Interview Invite", // Email subject
-        html: generateEmailContent(candidate)
+        html: generateEmailContent(name, link, experience)
       };
 
       // Send email
       await transporter.sendMail(mailOptions);
-      console.log(`Email sent to ${candidate.email}`);
+      console.log(`Email sent to ${email}`);
   
 
     return { success: true, message: "Emails sent successfully!" };

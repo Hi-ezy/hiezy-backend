@@ -5,37 +5,50 @@ const frontEndURL = process.env.FRONTEND_URL;
 const createInterviewDetail = async (req, res) => {
     try {
         const data = req.body || {};
+        // console.log(data)
+        const sentEmails = [];
         const candidatesList = data.candidatesList;
         for(let candidate of candidatesList){
             const randomString = uuidv4().split('-').join('')
-            let candidateData = {
+            const uniqueLink = `${frontEndURL}/interview?uniqueid=${randomString}`
+            let candidateData =new InterviewDetails( {
                 jobID :candidate?.jobID,
                 name: candidate?.name,
                 email :candidate?.email,
                 experience: candidate?.experience,
-                uniqueCode : randomString,
-                uniqueLink : `${frontEndURL}/candidate/interview?uniqueid=${randomString}`
+                uniqueRandomCode : randomString,
+                
+            })
+            // console.log("candidateData", candidateData)
+            const interviewDetails = await candidateData.save();
+            // console.log("candidate save", interviewDetails)
+            const sendEmail = await EmailService.sendEmail(candidate?.name, candidate?.email, uniqueLink, candidate?.experience)
+            if(sendEmail){
+                sentEmails.push(candidate?.email)
             }
-            const saveCandidate = await candidateData.save();
-            const sendEmail = EmailService.sendEmail(candidateData)
-            console.log("send Email", sendEmail)
         }
-
-        res.status(201).json({ message: 'Interview detail created successfully', interviewDetails });
+        res.status(200).json({
+            succuss:true,
+            code:200,
+            response: sentEmails,
+            message: "Interview details saved succussfully."
+        })
+        
     } catch (error) {
         res.status(500).json({ message: 'Error creating interview detail', error });
     }
 };
 
-const validateCandidate = async () =>{
+const validateCandidate = async (req, res) =>{
     const query = req.query || {};
     const uniqueID = query?.uniqueid;
     const candidate = await InterviewDetails.findOne({uniqueRandomCode:uniqueID});
+    // console.log(candidate)
     if(candidate){
         res.status(200).json({
             succuss:true,
             code:200,
-            sessionId: Date.now(),
+            data: candidate,
             message: "Candidate Validate Succussfully."
         })
     } else{
