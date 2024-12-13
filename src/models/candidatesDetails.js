@@ -1,14 +1,18 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const interviewDetailsSchema = new Schema({
+const candidateDetailsSchema = new Schema({
     jobID: {
         type:String,
+    },
+    name: {
+      type: String,
+      trim: true,
     },
     email: {
         type: String,
         trim: true,
       },
-      sessionID: {
+      experience: {
         type: String,
         trim: true,
       },
@@ -19,4 +23,4 @@ const interviewDetailsSchema = new Schema({
       
 }, {timestamps:true});
 
-module.exports = mongoose.model("interview_details", interviewDetailsSchema)
+module.exports = mongoose.model("candidate_list", candidateDetailsSchema)

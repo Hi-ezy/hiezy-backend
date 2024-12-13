@@ -1,24 +1,25 @@
 const { v4: uuidv4 } = require('uuid');
-const InterviewDetails = require("../../models/interviewDetails");
-
+const InterviewDetails = require("../../models/candidatesDetails");
+const EmailService = require("../commonService/email_service")
+const frontEndURL = process.env.FRONTEND_URL;
 const createInterviewDetail = async (req, res) => {
     try {
-        const userEmail = req.body.email;
-        const jobID = req.body.jobId
-        const randomString = uuidv4().split('-').join(''); // Generate a random string
-        const timestamp = Date.now();
-        const sessionID = timestamp
-        const uniqueCode = `${timestamp}-${randomString}`;
-        const newInterviewData = new InterviewDetails({
-            jobID:jobID,
-            email: userEmail,
-            sessionID:sessionID,
-            uniqueRandomCode: uniqueCode
-        });
-        const interviewDetails = await newInterviewData.save();
-        // const query = 'INSERT INTO interviewDetails (email, uniqueCode) VALUES (?, ?)';
-        // await db.execute(query, [userEmail, uniqueCode]);
-
+        const data = req.body || {};
+        const candidatesList = data.candidatesList;
+        for(let candidate of candidatesList){
+            const randomString = uuidv4().split('-').join('')
+            let candidateData = {
+                jobID :candidate?.jobID,
+                name: candidate?.name,
+                email :candidate?.email,
+                experience: candidate?.experience,
+                uniqueCode : randomString,
+                uniqueLink : `${frontEndURL}/candidate/interview?uniqueid=${randomString}`
+            }
+            const saveCandidate = await candidateData.save();
+            const sendEmail = EmailService.sendEmail(candidateData)
+            console.log("send Email", sendEmail)
+        }
 
         res.status(201).json({ message: 'Interview detail created successfully', interviewDetails });
     } catch (error) {
@@ -26,4 +27,24 @@ const createInterviewDetail = async (req, res) => {
     }
 };
 
-module.exports = { createInterviewDetail };
+const validateCandidate = async () =>{
+    const query = req.query || {};
+    const uniqueID = query?.uniqueid;
+    const candidate = await InterviewDetails.findOne({uniqueRandomCode:uniqueID});
+    if(candidate){
+        res.status(200).json({
+            succuss:true,
+            code:200,
+            sessionId: Date.now(),
+            message: "Candidate Validate Succussfully."
+        })
+    } else{
+        res.status(400).json({
+            succuss:true,
+            code:400,
+            message: "This is not valid link. please contact with HR."
+        })
+    }
+}
+
+module.exports = { createInterviewDetail, validateCandidate };

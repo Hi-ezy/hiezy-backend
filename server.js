@@ -22,7 +22,7 @@ app.use(express.json());
 
 //routing
 app.use("/app/ai",  aibotrouter)
-app.use("/app/interview",  interviewRouter)
+app.use("/app/candidate",  interviewRouter)
 //listning
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
