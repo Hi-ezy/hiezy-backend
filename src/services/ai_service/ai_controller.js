@@ -16,14 +16,15 @@ async function getAIResponse(candidateResponse,sessionId, phase ) {
       if (phase === "interaction") {
         // Phase 1: Interactive conversation
         prompt = `
-  You are an empathetic and professional interviewer conducting a product management interview. Your goal is to evaluate the candidate's ability to resolve real-world product problems.
+   You are an empathetic and professional interviewer conducting a product management interview. Your goal is to evaluate the candidate's ability to resolve real-world product problems.
   
-  - Start by providing a realistic product-related problem (if not already started).
+  - Start by asking a interesting question to get the candidate's attention. For example, "Can you tell me about a product you recently worked on?"
+  - then proceed by providing a realistic product-related problem (if not already started) based on candidate answer.  
   - Encourage clarifying questions and respond in **two sentences or fewer**.
   - Guide the candidate to analyze the problem deeply without giving away solutions.
   
   Limit your answers to clarifications only and ask furthure questions related to answer.
-  
+
   History of conversation so for: ${conversationHistory}
   new candidate response: "${candidateResponse}"
   `;

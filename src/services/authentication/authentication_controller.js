@@ -28,11 +28,50 @@ const login = async (req, res) => {
 };
 
 const signup = async (req, res) =>{
-    res.status(404).json({
-        succuss:true,
-        code:404,
-        message: "Under work"
-    })
 
+    try{
+        // Valiadation
+            //if fail return 400.
+
+        // Validate user exists
+        const existingUser = await credentials.findOne({emailid: req.body.email});
+
+        if(existingUser){
+            return res.status(409).json({
+                succuss:true,
+                code:409,
+                message: "User already exists"
+            });
+        }
+
+        //create new model value from the request body
+        const model = new credentials({
+            username: req.body.username,
+            password: req.body.password,
+            emailid: req.body.email
+        })
+
+
+
+        const user = await credentials.insertMany(model);
+        console.log(user);
+
+        if(user){
+            res.status(201).json({
+                succuss:true,
+                code:201,
+                data: user,
+                message: "User created Succussfully."
+            })
+        } 
+    }  catch(error){
+
+            res.status(500).json({
+                succuss:true,
+                code:500,
+                message: error
+            })
+
+    }
 };
 module.exports = { login, signup};
