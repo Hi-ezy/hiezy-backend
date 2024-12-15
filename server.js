@@ -21,6 +21,9 @@ app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
 
 //routing
+app.use("/", (req,res)=>{
+ res.send( "Welcome to hiezy")
+})
 app.use("/app/ai",  aibotrouter)
 app.use("/app/candidate",  interviewRouter)
 //listning
