@@ -21,7 +21,7 @@ app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
 
 //routing
-app.use("/", (req,res)=>{
+app.get("/", (req,res)=>{
  res.send( "Welcome to hiezy")
 })
 app.use("/app/ai",  aibotrouter)
