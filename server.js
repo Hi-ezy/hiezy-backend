@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const port = process.env.PORT
+const port = 8000;
 const app = express();
 const cors = require('cors')
 
@@ -22,9 +22,6 @@ app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
 
 //routing
-app.use("/", (req,res)=>{
- res.send( "Welcome to hiezy")
-})
 app.use("/app/ai",  aibotrouter)
 app.use("/app/candidate",  interviewRouter)
 app.use("/", authenticationRouter)

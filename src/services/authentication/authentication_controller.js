@@ -7,7 +7,7 @@ const login = async (req, res) => {
     const data = req.body || {};
     console.log("data : " +  JSON.stringify(data))
 
-    const user = await credentials.findOne({username: data.username, password: data.password});
+    const user = await credentials.findOne({emailid: data.email, password: data.password});
 
     console.log(user);
 
