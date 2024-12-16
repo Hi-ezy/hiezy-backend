@@ -28,7 +28,7 @@ app.get("/", (req,res)=>{
 })
 app.use("/app/ai",  aibotrouter)
 app.use("/app/candidate",  interviewRouter)
-app.use("/", authenticationRouter)
+app.use("/app/user", authenticationRouter)
 //listning
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
