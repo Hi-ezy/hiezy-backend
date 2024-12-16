@@ -22,6 +22,10 @@ app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
 
 //routing
+
+app.get("/", (req,res)=>{
+ res.send( "Welcome to hiezy")
+})
 app.use("/app/ai",  aibotrouter)
 app.use("/app/candidate",  interviewRouter)
 app.use("/", authenticationRouter)
