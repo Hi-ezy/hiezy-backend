@@ -1,7 +1,9 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const ConversionalLog = require("../../models/conversationModel")
+const JobPost = require("../../models/jobDetails")
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 // const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 async function getAIResponse(candidateResponse,sessionId, phase ) {
@@ -44,7 +46,7 @@ async function getAIResponse(candidateResponse,sessionId, phase ) {
       }
   
       // Initialize the Gemini model
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    
   
       // Generate a response
       const result = await model.generateContent(prompt, { maxTokens: 300 });
@@ -105,6 +107,8 @@ const  getConversationLog= async(sessionID) =>{
       console.log(error)
     }
 }
+
+
 
 
 module.exports={aiResponseGenrator}
