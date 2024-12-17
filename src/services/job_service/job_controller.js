@@ -7,10 +7,10 @@ const createJob = async (req, res)=>{
     try {
         const data = req.body || {};
         const newJob = new JobPost({
-          comapny: data.comapny,
+            company: data.company,
           jobTitle : data.jobTitle,
           skills: data.skills,
-            qualification : data.qualififcation,
+          qualification : data.qualification,
           experience: data.experience,
             salary : data.salary,
             location: data.location,
@@ -55,10 +55,10 @@ const createJob = async (req, res)=>{
         }
        
     }
-    const getAllJobBYComapny = async(req,res) =>{
+    const getAllJobBYCompany = async(req,res) =>{
         try {
             const query = req.query || {}
-            const allJobs =await JobPost.find({comapny:query?.comapny}).limit(query?.limit||10).skip(query?.skip|| 0).exec();
+            const allJobs =await JobPost.find({company:query?.company}).limit(query?.limit||10).skip(query?.skip|| 0).exec();
             res.status(200).json({
                 succuss:true,
                 code:200,
@@ -91,4 +91,4 @@ const createJob = async (req, res)=>{
           })
     }
 
-    module.exports = {jdCreator: createJob, createAIJD, getAllJob, getAllJobBYComapny}
+    module.exports = {jdCreator: createJob, createAIJD, getAllJob, getAllJobBYCompany}

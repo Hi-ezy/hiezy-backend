@@ -6,7 +6,7 @@ const jobSchema = new Schema({
       type: String,
       trim: true,
     },
-    comapny: {
+    company: {
         type: String,
         trim: true,
       },
@@ -18,7 +18,7 @@ const jobSchema = new Schema({
         type: Array,
         trim: true,
       },
-      qualification : {
+    qualification : {
         type: String,
         trim: true
     },
