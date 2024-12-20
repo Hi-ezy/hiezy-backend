@@ -14,7 +14,7 @@ const createJob = async (req, res)=>{
           experience: data.experience,
             salary : data.salary,
             location: data.location,
-          jobDescription: data.jd
+          jobDescription: data.description
         });
         const jobCreation = await newJob.save();
         res.status(200).json({
