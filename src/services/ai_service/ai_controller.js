@@ -11,7 +11,7 @@ async function getAIResponse(candidateResponse,sessionId, phase,jobId ) {
       const addToConversionLog = await createConversionLogs(sessionId, "candidate", candidateResponse);
       // console.log(addToConversionLog);
       const jobDetails = JobPost.findById({_id:jobId})
-      console.log(jobDetails)
+      // console.log(jobDetails)
       const conversationHistory = await getConversationLog(sessionId);
       // console.log(conversationHistory)
       let prompt;
@@ -56,7 +56,7 @@ Candidate's most recent response: "${candidateResponse}"
       // Generate a response
       const result = await model.generateContent(prompt, { maxTokens: 300 });
        await createConversionLogs(sessionId, "AI", result.response.text() )
-        console.log(result.response.text())
+        // console.log(result.response.text())
       return result.response.text();
   
     } catch (error) {
