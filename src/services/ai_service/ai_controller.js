@@ -11,6 +11,7 @@ async function getAIResponse(candidateResponse,sessionId, phase,jobId ) {
       const addToConversionLog = await createConversionLogs(sessionId, "candidate", candidateResponse);
       // console.log(addToConversionLog);
       const jobDetails = JobPost.findById({_id:jobId})
+      console.log(jobDetails)
       const conversationHistory = await getConversationLog(sessionId);
       // console.log(conversationHistory)
       let prompt;
@@ -70,8 +71,8 @@ const aiResponseGenrator = async (req, res) =>{
         const prompt = body.question.trim();
         const sessionID = body.sessionId
         const phase = body.phase;
-        const jobId = body.jobid
-        const aiResponse = await getAIResponse(prompt,sessionID, phase);
+        const jobId = body.jobId
+        const aiResponse = await getAIResponse(prompt,sessionID, phase, jobId);
         res.status(200).json({
             succuss:true,
             code:200,
