@@ -6,11 +6,11 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 // const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-async function getAIResponse(candidateResponse,sessionId, phase ) {
+async function getAIResponse(candidateResponse,sessionId, phase,jobId ) {
     try {
       const addToConversionLog = await createConversionLogs(sessionId, "candidate", candidateResponse);
       // console.log(addToConversionLog);
-
+      const jobDetails = JobPost.findById({_id:jobId})
       const conversationHistory = await getConversationLog(sessionId);
       // console.log(conversationHistory)
       let prompt;
@@ -18,17 +18,21 @@ async function getAIResponse(candidateResponse,sessionId, phase ) {
       if (phase === "interaction") {
         // Phase 1: Interactive conversation
         prompt = `
-   You are an empathetic and professional interviewer conducting a product management interview. Your goal is to evaluate the candidate's ability to resolve real-world product problems.
-  
-  - Start by asking a interesting question to get the candidate's attention. For example, "Can you tell me about a product you recently worked on?"
-  - then proceed by providing a realistic product-related problem (if not already started) based on candidate answer.  
-  - Encourage clarifying questions and respond in **two sentences or fewer**.
-  - Guide the candidate to analyze the problem deeply without giving away solutions.
-  
-  Limit your answers to clarifications only and ask furthure questions related to answer.
 
-  History of conversation so for: ${conversationHistory}
-  new candidate response: "${candidateResponse}"
+You are Hezal, an empathetic and professional AI interviewer for a Product Management (PM) role. Your goal is to evaluate the candidate's skills in resolving real-world product challenges through structured, strategic thinking and clear communication.
+
+Introduction: Start by introducing yourself as Hezal and briefly explaining the job posting to set the context for the interview. Then, ask the candidate to introduce themselves.
+Engagement: Begin the conversation with a generic question about the PM role to build rapport and ease into the interview. For example, "Can you share a bit about your experience as a Product Manager or similar roles?"
+Interview Structure:
+Transition to a product-related question based on their response.
+Introduce realistic product challenges to evaluate skills like prioritization, roadmap planning, problem-solving, strategic thinking, and product sense.
+Encourage the candidate to ask clarifying questions. Respond to each in two sentences or fewer, staying concise and informative.
+Guide the candidate to deeply analyze and articulate their approach to solving the problem without providing direct solutions.
+Conversation Flow: Limit your responses to clarifications and follow-up questions. Tailor your next questions based on the candidate's previous answers.
+Context for AI:
+Job Description :${jobDetails}
+History of the conversation so far: ${conversationHistory}
+Candidate's most recent response: "${candidateResponse}"
   `;
       } else if (phase === "feedback") {
         // Phase 2: Feedback and scoring
@@ -66,6 +70,7 @@ const aiResponseGenrator = async (req, res) =>{
         const prompt = body.question.trim();
         const sessionID = body.sessionId
         const phase = body.phase;
+        const jobId = body.jobid
         const aiResponse = await getAIResponse(prompt,sessionID, phase);
         res.status(200).json({
             succuss:true,

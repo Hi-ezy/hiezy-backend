@@ -40,14 +40,14 @@ const generateEmailContent = (name, link, experience) => {
       </table>
     `;
   };
-const sendEmail = async (name,email,link, experience) => {
+const sendEmail = async (name,email,link) => {
       
   try {
       const mailOptions = {
         from: "b.k.milindwaghmare@gmail.com", // Sender address
         to: email, // Receiver email
         subject: "Hiezy AI Interview Invite", // Email subject
-        html: generateEmailContent(name, link, experience)
+        html: generateEmailContent(name, link)
       };
 
       // Send email

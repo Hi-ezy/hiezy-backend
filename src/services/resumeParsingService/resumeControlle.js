@@ -6,6 +6,11 @@ const pdfParse = require('pdf-parse');
 const { v2: cloudinary } = require('cloudinary');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const fs = require('fs');
+
+const { v4: uuidv4 } = require('uuid');
+const InterviewDetails = require("../../models/candidatesDetails");
+const EmailService = require("../commonService/email_service")
+const frontEndURL = process.env.FRONTEND_URL;
 // const jobDetails = require("../../models/jobDetails");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -26,27 +31,7 @@ const storage = new CloudinaryStorage({
 });
 
 const upload = multer({ storage });
-async function getMatchingPercentage(resume, jobId ) {
-    try {
-      const resume = ''
-      let prompt =`match the cnadidate resume with job description and get matching percentage.`
-      
-  
-      // Initialize the Gemini model
-    
-  
-      // Generate a response
-      const result = await model.generateContent(prompt, { maxTokens: 300 });
-       await createConversionLogs(sessionId, "AI", result.response.text() )
 
-      return result.response.text();
-  
-    } catch (error) {
-      console.error("Error fetching AI response:", error);
-      throw error;
-    }
-  }
-  
   const uploadResume = async (req, res) => {
     try {
       const file = req.file || {};
@@ -85,7 +70,21 @@ async function getMatchingPercentage(resume, jobId ) {
   
       // Step 6: Extract Match Percentage
       const matchPercentage = result.response.text() || 'Unable to calculate match'; // Adjust based on actual response structure
-  
+        if(parseInt(matchPercentage > 60)){
+          const randomString = uuidv4().split('-').join('')
+          const uniqueLink = `${frontEndURL}/interview?uniqueid=${randomString}`
+          let candidateData =new InterviewDetails( {
+              jobID :jobId,
+              name: body?.name,
+              email :body?.email,
+              uniqueRandomCode : randomString,
+          })
+          console.log("candidateData", candidateData)
+          const interviewDetails = await candidateData.save();
+          // console.log("candidate save", interviewDetails)
+          const sendEmail = await EmailService.sendEmail(body?.name, body?.email, uniqueLink)
+         console.log(sendEmail)
+        }
       // Step 7: Send the Success Response
       res.status(200).json({
         success: true,

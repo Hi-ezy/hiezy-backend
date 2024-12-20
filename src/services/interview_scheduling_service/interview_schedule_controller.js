@@ -17,7 +17,6 @@ const createInterviewDetail = async (req, res) => {
                 email :candidate?.email,
                 experience: candidate?.experience,
                 uniqueRandomCode : randomString,
-                
             })
             // console.log("candidateData", candidateData)
             const interviewDetails = await candidateData.save();
