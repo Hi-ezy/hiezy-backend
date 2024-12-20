@@ -70,7 +70,8 @@ const upload = multer({ storage });
   
       // Step 6: Extract Match Percentage
       const matchPercentage = result.response.text() || 'Unable to calculate match'; // Adjust based on actual response structure
-        if(parseInt(matchPercentage > 60)){
+      console.log(parseInt(matchPercentage))
+        if(parseInt(matchPercentage)> 60){
           const randomString = uuidv4().split('-').join('')
           const uniqueLink = `${frontEndURL}/interview?uniqueid=${randomString}`
           let candidateData =new InterviewDetails( {
