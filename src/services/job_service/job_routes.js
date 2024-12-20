@@ -5,5 +5,6 @@ router.post("/create-job", job.jdCreator);
 router.post("/create-jd", job.createAIJD);
 router.get("/getalljobs", job.getAllJob);
 router.get("/getjobbycompany", job.getAllJobBYCompany);
+router.get("/getJobbyid", job.getJobById);
 // router.post("/createjob", ai.jdCreator);
 module.exports = router;

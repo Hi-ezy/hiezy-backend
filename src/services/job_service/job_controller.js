@@ -76,6 +76,27 @@ const createJob = async (req, res)=>{
         }
        
     }
+    const getJobById = async(req,res) =>{
+        try {
+            const query = req.query || {}
+            const getspecificJobs =await JobPost.find({_id:query?.id}).exec();
+            res.status(200).json({
+                succuss:true,
+                code:200,
+                response: getspecificJobs,
+                message: "Job by Id fetched Succussfully"
+              })
+
+        } catch (error) {
+            res.status(400).json({
+                succuss:false,
+                code:400,
+                err: error, 
+                message: error.toString() || "Something went wrong"
+            })
+        }
+       
+    }
 
     const createAIJD = async (req, res)=>{
         const data = req.body || {};
@@ -91,4 +112,4 @@ const createJob = async (req, res)=>{
           })
     }
 
-    module.exports = {jdCreator: createJob, createAIJD, getAllJob, getAllJobBYCompany}
+    module.exports = {jdCreator: createJob, createAIJD, getAllJob, getAllJobBYCompany,getJobById}
