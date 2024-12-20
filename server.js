@@ -10,6 +10,7 @@ const aibotrouter = require("./src/services/ai_service/ai_router")
 const interviewRouter = require("./src/services/interview_scheduling_service/interview_details_router")
 const authenticationRouter = require("./src/services/authentication/authentication_router")
 const jobRouter = require("./src/services/job_service/job_routes")
+const candidateRouter = require("./src/services/resumeParsingService/resumeRouter")
 //databse connection
 mongoose.connect(process.env.MONGODB_STRING);
 
@@ -31,6 +32,7 @@ app.use("/app/ai",  aibotrouter)
 app.use("/app/candidate",  interviewRouter)
 app.use("/app/user", authenticationRouter)
 app.use("/app/jobs", jobRouter)
+app.use("/app/candidate", candidateRouter);
 //listning
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
