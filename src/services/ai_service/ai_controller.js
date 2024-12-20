@@ -6,67 +6,54 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 // const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-async function getAIResponse(candidateResponse, sessionId, phase, jobId) {
+async function getAIResponse(candidateResponse,sessionId, phase ) {
   try {
-    // 1. Log candidate response to conversion history
-    await createConversionLogs(sessionId, "candidate", candidateResponse);
+    const addToConversionLog = await createConversionLogs(sessionId, "candidate", candidateResponse);
+    // console.log(addToConversionLog);
 
-    // 2. Fetch job details and conversation history
-    const jobDetails = await JobPost.findById(jobId);
     const conversationHistory = await getConversationLog(sessionId);
-
-    // 3. Construct AI prompt based on phase
+    // console.log(conversationHistory)
     let prompt;
 
     if (phase === "interaction") {
       // Phase 1: Interactive conversation
       prompt = `
-You are Hazel, an empathetic and professional AI interviewer for a Product Management (PM) role. Your goal is to evaluate the candidate's skills in resolving real-world product challenges through structured, strategic thinking, and clear communication.
+ You are Hazel, empathetic and professional interviewer conducting a product management interview. Your goal is to evaluate the candidate's ability to resolve real-world product problems.
 
-Introduction: Start by introducing yourself as Hazel and briefly explaining the job posting to set the context for the interview. Then, ask the candidate to introduce themselves.
+- Start by asking a interesting question to get the candidate's attention. For example, "start with introduction."
+- then proceed by providing a realistic product-related problem (if not already started) based on candidate answer.  
+- Encourage clarifying questions and respond in **two sentences or fewer**.
+- Guide the candidate to analyze the problem deeply without giving away solutions.
 
-Engagement: Begin the conversation with a generic question about the PM role to build rapport and ease into the interview. For example, "Can you share a bit about your experience as a Product Manager or similar roles?"
+Limit your answers to clarifications only and ask furthure questions related to answer.
 
-Interview Structure:
-Transition to a product-related question based on their response.
-Introduce realistic product challenges to evaluate skills like prioritization, roadmap planning, problem-solving, strategic thinking, and product sense.
-Encourage the candidate to ask clarifying questions. Respond to each in two sentences or fewer, staying concise and informative.
-Guide the candidate to deeply analyze and articulate their approach to solving the problem without providing direct solutions.
-
-Conversation Flow: Limit your responses to clarifications and follow-up questions. Tailor your next questions based on the candidate's previous answers.
-
-Context for AI:
-Job Description :${jobDetails?.jobDescription}
-History of the conversation so far: ${conversationHistory}
-Candidate's most recent response: "${candidateResponse}"
-      `;
+History of conversation so for: ${conversationHistory}
+new candidate response: "${candidateResponse}"
+`;
     } else if (phase === "feedback") {
       // Phase 2: Feedback and scoring
       prompt = `
 You are now providing feedback on the candidate's performance in a product management interview.
-
-History: ${conversationHistory}
-
+     history: ${conversationHistory}
 - Strengths: Highlight insightful analysis or creative solutions.
 - Weaknesses: Identify areas for improvement, e.g., lack of depth or missed key points.
 - Suggested improvements: Offer practical advice on how to improve.
-- Rate the response on a scale of 1 to 10.
+Rate the response on a scale of 1 to 10.
 
 The candidate's performance summary:
 "${candidateResponse}"
-      `;
+`;
     }
 
-    // 4. Generate AI response using the Gemini model
+    // Initialize the Gemini model
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    // Generate a response
     const result = await model.generateContent(prompt, { maxTokens: 300 });
+     await createConversionLogs(sessionId, "AI", result.response.text() )
 
-    const aiReply = result.response.text();
-
-    // 5. Log AI response to conversion history
-    // await createConversionLogs(sessionId, "AI", aiReply);
-
-    // 6. Return AI response
     return result.response.text();
+
   } catch (error) {
     console.error("Error fetching AI response:", error);
     throw error;
