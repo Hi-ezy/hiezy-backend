@@ -73,7 +73,7 @@ const upload = multer({ storage });
       console.log(parseInt(matchPercentage))
       const randomString = uuidv4().split('-').join('')
       const uniqueLink = `${frontEndURL}/interview?uniqueid=${randomString}`
-        if(parseInt(matchPercentage)> 60){
+        if(parseInt(matchPercentage)> 55){
           let candidateData =new InterviewDetails( {
               jobID :jobId,
               name: body?.name,
