@@ -8,8 +8,9 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const fs = require('fs');
 
 const { v4: uuidv4 } = require('uuid');
-const InterviewDetails = require("../../models/candidatesDetails");
+const InterviewDetails = require("../../models/candidatesDetailsModel");
 const EmailService = require("../commonService/email_service")
+const CandidateData = require("../../models/candidatesDetailsModel");
 const frontEndURL = process.env.FRONTEND_URL;
 // const jobDetails = require("../../models/jobDetails");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -79,6 +80,10 @@ const upload = multer({ storage });
               name: body?.name,
               email :body?.email,
               uniqueRandomCode : randomString,
+              resume_score: parseInt(matchPercentage),
+              candidate_status: 'shortlisted',
+              date_of_application: new Date(now),
+              interview_status: 'scheduled',
           })
           console.log("candidateData", candidateData)
           const interviewDetails = await candidateData.save();
@@ -86,7 +91,20 @@ const upload = multer({ storage });
           const sendEmail = await EmailService.sendEmail(body?.name, body?.email, uniqueLink)
          console.log(sendEmail)
         }
-      // Step 7: Send the Success Response
+        else{
+          let candidateData =new InterviewDetails( {
+              jobID :jobId,
+              name: body?.name,
+              email :body?.email,
+              uniqueRandomCode : randomString,
+              resume_score: parseInt(matchPercentage),
+              candidate_status: 'rejected',
+              date_of_application: new Date(now)
+          })
+          console.log("candidateData", candidateData)
+          const interviewDetails = await candidateData.save();
+        }
+      // Step 7: Send the Success Responses
       res.status(200).json({
         success: true,
         code: 200,
