@@ -5,7 +5,10 @@ const JobPost = require("../../models/jobDetails")
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 // const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
+const Retell = require("retell-sdk");
+const client = new Retell({
+    apiKey: process.env.RETELL_API_KEY,
+  });
 async function getAIResponse(candidateResponse,sessionId, phase ) {
   try {
     const addToConversionLog = await createConversionLogs(sessionId, "candidate", candidateResponse);
@@ -66,12 +69,14 @@ const aiResponseGenrator = async (req, res) =>{
         const sessionID = body.sessionId
         const phase = body.phase;
         const jobId = body.jobId
+
         const aiResponse = await getAIResponse(prompt,sessionID, phase, jobId);
+        const audioResponse  = await retellAiTextToSpeech(aiResponse)
       //  const newAIConversionalLog = await createConversionLogs(sessionID, "AI", aiResponse);
         res.status(200).json({
             succuss:true,
             code:200,
-            response: aiResponse,
+            response: audioResponse,
             message: "AI replyed."
         })
     } catch (error) {
@@ -109,7 +114,28 @@ const  getConversationLog= async(sessionID) =>{
     }
 }
 
+async function retellAiTextToSpeech(text) {
+  try {
 
+    const params = {
+      response_engine: { 
+        llm_id: process.env.LLMID,
+        type: 'retell-llm'
+      },
+      voice_id: process.env.VOICE_ID,
+      text: text, 
+    };
+    console.log(params)
+    const agentResponse = await client.agent.create(params);
+    console.log("TTS Response:", agentResponse);
+
+    // Assuming the response contains a URL or audio content
+    return agentResponse?.llm_websocket_url;
+  } catch (error) {
+    console.error("Error interacting with Retell AI SDK:", error);
+    throw error;
+  }
+}
 
 
 module.exports={aiResponseGenrator}
