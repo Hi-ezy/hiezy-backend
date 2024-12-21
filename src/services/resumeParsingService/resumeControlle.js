@@ -81,9 +81,9 @@ const upload = multer({ storage });
               email :body?.email,
               uniqueRandomCode : uniqueLink,
               resume_score: parseInt(matchPercentage),
-              candidate_status: 'shortlisted',
+              candidate_status: 'Shortlisted',
               date_of_application: new Date(),
-              interview_status: 'scheduled',
+              interview_status: 'Scheduled',
           })
           console.log("candidateData", candidateData)
           const interviewDetails = await candidateData.save();
@@ -97,7 +97,7 @@ const upload = multer({ storage });
               name: body?.name,
               email :body?.email,
               resume_score: parseInt(matchPercentage),
-              candidate_status: 'rejected'
+              candidate_status: 'Rejected'
           })
           console.log("candidateData", candidateData)
           const interviewDetails = await candidateData.save();

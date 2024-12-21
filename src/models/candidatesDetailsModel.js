@@ -26,8 +26,8 @@ const candidateDetailsSchema = new Schema({
     },
     candidate_status: {
         type: String,
-        enum: ['applied', 'shortlisted', 'interviewed', 'hired','rejected'],
-        default: 'applied'
+        enum: ['Applied', 'Shortlisted', 'Interviewed', 'Hired','Rejected'],
+        default: 'Applied'
     },
     date_of_application: {
         type: Date,
@@ -38,7 +38,7 @@ const candidateDetailsSchema = new Schema({
     },
     interview_status: {
         type: String,
-        enum: ['scheduled', 'completed', 'no_show', 'pending']
+        enum: ['Scheduled', 'Completed', 'No Show', 'Pending']
     }
 }, {timestamps: true});
 
