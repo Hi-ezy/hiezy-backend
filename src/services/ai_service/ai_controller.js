@@ -1,5 +1,5 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-
+const WebSocket = require('ws');
 const ConversionalLog = require("../../models/conversationModel")
 const JobPost = require("../../models/jobDetails")
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -76,7 +76,7 @@ const aiResponseGenrator = async (req, res) =>{
         res.status(200).json({
             succuss:true,
             code:200,
-            response: audioResponse,
+            response: {audioResponse, aiResponse},
             message: "AI replyed."
         })
     } catch (error) {
@@ -116,21 +116,40 @@ const  getConversationLog= async(sessionID) =>{
 
 async function retellAiTextToSpeech(text) {
   try {
-
     const params = {
-      response_engine: { 
+      response_engine: {
         llm_id: process.env.LLMID,
         type: 'retell-llm'
       },
       voice_id: process.env.VOICE_ID,
-      text: text, 
+      text: text,
     };
-    console.log(params)
+
     const agentResponse = await client.agent.create(params);
     console.log("TTS Response:", agentResponse);
 
-    // Assuming the response contains a URL or audio content
-    return agentResponse?.llm_websocket_url;
+    // Create a WebSocket connection using the URL from the response
+    const ws = new WebSocket(agentResponse.llm_websocket_url);
+
+    // Initialize an empty string to store the transcript
+    let transcript = '';
+
+    // Listen for 'update' events
+    ws.on('update', (update) => {
+      if (update.transcript) {
+        // Append the new transcript to the existing one
+        transcript += update.transcript;
+        console.log(transcript)
+      }
+    });
+
+    // Listen for 'call_ended' event to know when to return the transcript
+    ws.on('call_ended', () => {
+      console.log("Full Transcript:", transcript);
+      // You can return or process the transcript here
+    });
+
+    return agentResponse.llm_websocket_url;
   } catch (error) {
     console.error("Error interacting with Retell AI SDK:", error);
     throw error;
