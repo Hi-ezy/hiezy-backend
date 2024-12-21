@@ -71,9 +71,9 @@ const upload = multer({ storage });
       // Step 6: Extract Match Percentage
       const matchPercentage = result.response.text() || 'Unable to calculate match'; // Adjust based on actual response structure
       console.log(parseInt(matchPercentage))
+      const randomString = uuidv4().split('-').join('')
+      const uniqueLink = `${frontEndURL}/interview?uniqueid=${randomString}`
         if(parseInt(matchPercentage)> 60){
-          const randomString = uuidv4().split('-').join('')
-          const uniqueLink = `${frontEndURL}/interview?uniqueid=${randomString}`
           let candidateData =new InterviewDetails( {
               jobID :jobId,
               name: body?.name,
@@ -90,7 +90,7 @@ const upload = multer({ storage });
       res.status(200).json({
         success: true,
         code: 200,
-        response: matchPercentage,
+        response: {matchPercentage, uniqueLink},
         message: 'Resume uploaded successfully.',
       });
     } catch (error) {
