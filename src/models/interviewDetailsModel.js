@@ -38,8 +38,7 @@ const interviewDetailsSchema = new Schema({
     },
     interview_status: {
         type: String,
-        enum: ['scheduled', 'completed', 'no_show', 'pending'],
-        default: 'pending'
+        enum: ['Scheduled', 'Completed', 'No_show', 'Pending']
     },
     Candidate_relevency: {
         type: String,
