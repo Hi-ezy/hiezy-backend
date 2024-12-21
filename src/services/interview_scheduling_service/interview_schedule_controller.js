@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const InterviewDetails = require("../../models/candidatesDetailsModel");
+const InterviewDetails = require("../../models/candidatesDetails");
 const EmailService = require("../commonService/email_service")
 const frontEndURL = process.env.FRONTEND_URL;
 const createInterviewDetail = async (req, res) => {
