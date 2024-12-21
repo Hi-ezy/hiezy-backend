@@ -32,7 +32,7 @@ app.use("/app/ai",  aibotrouter)
 app.use("/app/candidate",  interviewRouter)
 app.use("/app/user", authenticationRouter)
 app.use("/app/jobs", jobRouter)
-app.use("/app/candidate", candidateRouter);
+app.use("/app/resume", candidateRouter);
 //listning
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
