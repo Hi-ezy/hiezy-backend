@@ -35,9 +35,7 @@ app.use("/app/candidate",  interviewRouter)
 app.use("/app/user", authenticationRouter)
 app.use("/app/jobs", jobRouter)
 app.use("/app/resume", candidateRouter);
-app.use("/app/interviewscore", interviewScoringRouter);
-app.use("/app/candidatedata", candidateDataRouter);
-
+//listning
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
 });
