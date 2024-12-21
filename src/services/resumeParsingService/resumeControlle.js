@@ -79,7 +79,7 @@ const upload = multer({ storage });
               jobID :jobId,
               name: body?.name,
               email :body?.email,
-              uniqueRandomCode : randomString,
+              uniqueRandomCode : uniqueLink,
               resume_score: parseInt(matchPercentage),
               candidate_status: 'shortlisted',
               date_of_application: new Date(),
@@ -96,7 +96,6 @@ const upload = multer({ storage });
               jobID :jobId,
               name: body?.name,
               email :body?.email,
-              uniqueRandomCode : randomString,
               resume_score: parseInt(matchPercentage),
               candidate_status: 'rejected'
           })
